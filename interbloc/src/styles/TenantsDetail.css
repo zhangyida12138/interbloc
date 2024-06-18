@@ -1,0 +1,26 @@
+.tenants-detail {
+    text-align: center;/*put all texts in center*/
+    font-family: 'Roboto', sans-serif;/*change font type*/
+  }
+  
+  .tenants-detail main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+    
+  #section1 {
+    background-color: rgba(173, 216, 230, 0.5);
+    
+}
+  #section2 {
+    background-color: rgba(144, 238, 144, 0.5);
+}
+
+section {
+  margin: 10px 0;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  width: 75%;
+}

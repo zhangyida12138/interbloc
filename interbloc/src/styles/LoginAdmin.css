@@ -1,0 +1,161 @@
+/* Ensure the container takes up the full viewport height */
+.vh-100 {
+  height: 100vh;
+}
+
+/* Center content vertically and horizontally */
+.d-flex {
+  display: flex !important;
+}
+
+.justify-content-center {
+  justify-content: center !important;
+}
+
+.align-items-center {
+  align-items: center !important;
+}
+
+/* Ensure the row takes up the full width */
+.w-100 {
+  width: 100% !important;
+}
+
+/* Center the column within the row */
+.mx-auto {
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+/* Custom styles for the login container and box */
+.login-container,
+.register-container,
+.reset-container,
+.sendcode-container {
+  background-color: #f8f9fa;
+}
+
+/* Common box styles */
+.login-box,
+.register-box,
+.reset-box,
+.sendcode-box {
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-width: 400px; /* Adjust the max-width as needed */
+  margin: 0 auto; /* Center the box */
+}
+
+/* Logo container with black background */
+.logo-container {
+  background-color: black;
+  padding: 1rem;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center; /* Horizontally center the logo */
+  align-items: center; /* Vertically center the logo */
+  width: 150px;
+  height: 40px;
+  margin: auto;
+}
+
+/* Enlarged logo */
+.logo {
+  width: 150px;
+  height: 150px;
+}
+
+.text-center {
+  text-align: center !important;
+}
+
+.text-left {
+  text-align: left !important;
+}
+
+.mb-4 {
+  margin-bottom: 1.5rem !important;
+}
+
+.mt-4 {
+  margin-top: 1.5rem !important;
+}
+
+.mt-3 {
+  margin-top: 1rem !important;
+}
+
+/* Style for form labels */
+form label {
+  font-weight: bold;
+  display: block; /* Added to position labels above inputs */
+  margin-bottom: 0.5rem; /* Added for spacing between label and input */
+  text-align: left; /* Ensure labels are left aligned */
+}
+
+/* Input fields */
+input[type="name"],
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="password"] {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box; /* Include padding in width calculation */
+  margin-bottom: 1rem; /* Added spacing between inputs */
+}
+
+/* Common button styles */
+.login-button,
+.register-button,
+.reset-button,
+.sendcode-button {
+  background: #C11515;
+  border: none;
+  color: white; /* Added for clear text contrast */
+  padding: 1rem 2rem; /* Increased padding for better size */
+  border-radius: 4px; /* Consistent with input field radius */
+  cursor: pointer; /* Indicate clickable button */
+  transition: background 0.3s ease-in-out;
+}
+
+.login-button:hover,
+.register-button:hover,
+.reset-button:hover,
+.sendcode-button:hover {
+  background: #e49595;
+}
+
+/* Password icon */
+.password-icon {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
+a {
+  text-decoration: none;
+  color: #007bff;
+}
+
+a:hover {
+  text-decoration: underline;
+  color: #0056b3;
+}
+
+.QuickLink a {
+  color: #007bff;
+  text-decoration: none;
+  transition: color 0.3s, transform 0.3s;
+}
+
+.QuickLink:hover {
+  color: #0056b3;
+  transform: scale(1.05);
+}
