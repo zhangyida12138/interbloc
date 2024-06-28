@@ -13,7 +13,7 @@ function App() {
         <Route path="/admin/*" element={<AdminPortal />} />
         <Route path="/customer/*" element={<CustomerPortal />} />
         <Route path="/test" element={<TestPage />} /> {/* used for testing */}
-        <Route path="/" element={<Navigate to="/test" />} /> {/* change admin into customer if u want to load customer portal */}
+        <Route path="/" element={<Navigate to="/customer" />} /> {/* change admin into customer if u want to load customer portal */}
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>
