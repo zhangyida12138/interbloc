@@ -12,8 +12,13 @@ function App() {
       <Routes>
         <Route path="/admin/*" element={<AdminPortal />} />
         <Route path="/customer/*" element={<CustomerPortal />} />
+<<<<<<< HEAD
         {/* <Route path="/test" element={<TestPage />} /> used for testing */}
         <Route path="/" element={<Navigate to="/admin" />} /> {/* change admin into customer if u want to load customer portal */}
+=======
+        <Route path="/test" element={<TestPage />} /> {/* used for testing */}
+        <Route path="/" element={<Navigate to="/customer" />} /> {/* change admin into customer if u want to load customer portal */}
+>>>>>>> f83c3651c5c64107bd7bb89d6eccf54c1bf4c193
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>
