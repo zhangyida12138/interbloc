@@ -3,29 +3,35 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^6.5.2",
+    "@fortawesome/free-solid-svg-icons": "^6.5.2",
+    "@fortawesome/react-fontawesome": "^0.2.2",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
-    "@testing-library/user-event": "^13.5.0",
     "aws-amplify": "^5.0.9",
-    "aws-sdk": "^2.1643.0",
+    "body-parser": "^1.20.2",
     "bootstrap": "^5.3.3",
-    "concurrently": "^8.2.2",
+    "cors": "^2.8.5",
     "express": "^4.19.2",
     "http-proxy-middleware": "^3.0.0",
     "react": "^18.3.1",
     "react-bootstrap": "^2.10.2",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.23.1",
-    "react-scripts": "^3.0.1",
-    "request": "^2.88.2",
+    "react-scripts": "^3.4.4",
+    "recharts": "^2.12.7",
+    "survey-core": "^1.11.4",
+    "survey-creator-core": "^1.11.4",
+    "survey-creator-react": "^1.11.4",
+    "survey-react-ui": "^1.11.4",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
     "start": "concurrently \"npm run start:backend\" \"npm run start:frontend\"",
     "start:backend": "node src/server.js",
-    "start:frontend": "set NODE_OPTIONS=--openssl-legacy-provider && react-scripts start",
-    "build": "set NODE_OPTIONS=--openssl-legacy-provider && react-scripts build",
-    "test": "set NODE_OPTIONS=--openssl-legacy-provider && react-scripts test",
+    "start:frontend": "cross-env NODE_OPTIONS=--openssl-legacy-provider react-scripts start",
+    "build": "cross-env NODE_OPTIONS=--openssl-legacy-provider react-scripts build",
+    "test": "cross-env NODE_OPTIONS=--openssl-legacy-provider react-scripts test",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -47,6 +53,9 @@
     ]
   },
   "devDependencies": {
-    "concurrently": "^8.2.2"
-  }
+    "concurrently": "^8.2.2",
+    "cross-env": "^7.0.3",
+    "react-test-renderer": "^18.3.1"
+  },
+  "proxy": "http://localhost:5000"
 }

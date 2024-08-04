@@ -1,212 +1,162 @@
-import React, { useState, useEffect } from 'react';
-import { Auth } from 'aws-amplify';
-import { getToken, addUserToCognito, addUserToTenant, getPagedUsers, toggleUserStatus, createDatabase, createServer, getAllServers, createTenant, updateTenant, getPagedTenants, disableTenant } from '../api';
-import adminConfig from '../aws-exports-admin';
-import customerConfig from '../aws-exports-customer';
+// import React, { useState } from 'react';
+// import { signIn, getToken } from '../AuthService';
+// import { 
+//   addUser, toggleUserStatus, getPagedUsers, createDatabase, createServer, 
+//   getAllServers, createTenant, updateTenant, getPagedTenants, disableTenant 
+// } from '../api';
 
-const TestPage = () => {
-  const [response, setResponse] = useState(null);
-  const [error, setError] = useState(null);
-  const [user, setUser] = useState(null);
-  const [token, setToken] = useState(null);
-  const [configType, setConfigType] = useState(null);
+// const TestPage = () => {
+//   const [username, setUsername] = useState('');
+//   const [password, setPassword] = useState('');
+//   const [userType, setUserType] = useState('admin'); // 'admin' or 'customer'
+//   const [token, setToken] = useState(null);
+//   const [error, setError] = useState(null);
+//   const [result, setResult] = useState('');
 
-  const checkCurrentUser = async () => {
-    try {
-      const currentUser = await Auth.currentAuthenticatedUser();
-      const session = await Auth.currentSession();
-      const token = session.getIdToken().getJwtToken();
-      setUser(currentUser);
-      setToken(token);
-    } catch (err) {
-      setError('No current user');
-    }
-  };
+//   const [userData, setUserData] = useState({});
+//   const [tenantData, setTenantData] = useState({});
+//   const [databaseData, setDatabaseData] = useState({});
+//   const [serverData, setServerData] = useState({});
+//   const [filterData, setFilterData] = useState({});
 
-  const handleLogin = async (type) => {
-    try {
-      if (type === 'admin') {
-        Auth.configure(adminConfig);
-      } else if (type === 'customer') {
-        Auth.configure(customerConfig);
-      }
-      const user = await Auth.signIn('uniAdmin@intebloc.com', 'Pa$$wordUn!v3rs!ty');
-      const session = await Auth.currentSession();
-      const token = session.getIdToken().getJwtToken();
-      setUser(user);
-      setToken(token);
-      setConfigType(type);
-    } catch (err) {
-      setError('Login failed: ' + err.message);
-    }
-  };
+//   const handleLogin = async (e) => {
+//     e.preventDefault();
+//     try {
+//       await signIn(username, password, userType);
+//       const token = await getToken(); // Get JWT Token after login
+//       setToken(token);
+//       setError(null);
+//     } catch (error) {
+//       setError(error.message);
+//     }
+//   };
 
-  const handleAddUser = async () => {
-    try {
-      const uuid = await addUserToCognito('newuser', 'newuser@example.com');
-      const user = {
-        id: uuid,  // Cognito中的UUID
-        username: 'newuser',
-        tenantId: 'tenant123'
-      };
-      const res = await addUserToTenant(user, token);
-      setResponse(res);
-    } catch (err) {
-      setError(err.toString());
-    }
-  };
+//   const handleInputChange = (e, setData) => {
+//     setData(prevData => ({ ...prevData, [e.target.name]: e.target.value }));
+//   };
 
-  const handleGetPagedUsers = async () => {
-    try {
-      const params = {
-        Show: 'all',
-        PageSize: 10,
-        CurrentPage: 1
-      };
-      const res = await getPagedUsers(params, token);
-      setResponse(res);
-    } catch (err) {
-      setError(err.toString());
-    }
-  };
+//   const handleApiCall = async (apiFunction, data) => {
+//     try {
+//       const response = await apiFunction(data);
+//       setResult(JSON.stringify(response, null, 2)); // Ensure correct response logging
+//     } catch (error) {
+//       setResult(error.message);
+//     }
+//   };
 
-  const handleToggleUserStatus = async () => {
-    try {
-      const params = {
-        id: 'user-uuid',  // 用户UUID
-        enabled: false
-      };
-      const res = await toggleUserStatus(params, token);
-      setResponse(res);
-    } catch (err) {
-      setError(err.toString());
-    }
-  };
+//   if (!token) {
+//     return (
+//       <div>
+//         <h1>Login</h1>
+//         <form onSubmit={handleLogin}>
+//           <div>
+//             <label>Username:</label>
+//             <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
+//           </div>
+//           <div>
+//             <label>Password:</label>
+//             <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+//           </div>
+//           <div>
+//             <label>User Type:</label>
+//             <select value={userType} onChange={(e) => setUserType(e.target.value)}>
+//               <option value="admin">Admin</option>
+//               <option value="customer">Customer</option>
+//             </select>
+//           </div>
+//           {error && <p style={{ color: 'red' }}>{error}</p>}
+//           <button type="submit">Login</button>
+//         </form>
+//       </div>
+//     );
+//   }
 
-  const handleCreateDatabase = async () => {
-    try {
-      const db = {
-        dbName: 'newDatabase',
-        serverId: 'server-uuid'
-      };
-      const res = await createDatabase(db, token);
-      setResponse(res);
-    } catch (err) {
-      setError(err.toString());
-    }
-  };
+//   return (
+//     <div>
+//       <h1>Test Page</h1>
+//       {userType === 'admin' ? (
+//         <div>
+//         <div>
+//           <h3>Create Database</h3>
+//           <input type="text" name="dbName" placeholder="Database Name" onChange={(e) => handleInputChange(e, setDatabaseData)} />
+//           <input type="text" name="serverId" placeholder="Server ID" onChange={(e) => handleInputChange(e, setDatabaseData)} />
+//           <button onClick={() => handleApiCall(createDatabase, databaseData)}>Create Database</button>
+//         </div>
+//         <div>
+//           <h3>Create Server</h3>
+//           <input type="text" name="host" placeholder="Host" onChange={(e) => handleInputChange(e, setServerData)} />
+//           <input type="number" name="portNumber" placeholder="Port Number" onChange={(e) => handleInputChange(e, setServerData)} />
+//           <button onClick={() => handleApiCall(createServer, serverData)}>Create Server</button>
+//         </div>
+//         <div>
+//           <h3>Get All Servers</h3>
+//           <button onClick={() => handleApiCall(getAllServers, {})}>Get Servers</button>
+//         </div>
+//         <div>
+//           <h3>Create Tenant</h3>
+//           <input type="text" name="customerName" placeholder="Customer Name" onChange={(e) => handleInputChange(e, setTenantData)} />
+//           <input type="text" name="logoUrl" placeholder="Logo URL" onChange={(e) => handleInputChange(e, setTenantData)} />
+//           <input type="text" name="databaseId" placeholder="Database ID" onChange={(e) => handleInputChange(e, setTenantData)} />
+//           <button onClick={() => handleApiCall(createTenant, tenantData)}>Create Tenant</button>
+//         </div>
+//         <div>
+//           <h3>Update Tenant</h3>
+//           <input type="text" name="id" placeholder="Tenant ID" onChange={(e) => handleInputChange(e, setTenantData)} />
+//           <input type="text" name="customerName" placeholder="Customer Name" onChange={(e) => handleInputChange(e, setTenantData)} />
+//           <input type="text" name="logoUrl" placeholder="Logo URL" onChange={(e) => handleInputChange(e, setTenantData)} />
+//           <input type="checkbox" name="archived" onChange={(e) => handleInputChange(e, setTenantData)} /> Archived
+//           <button onClick={() => handleApiCall(updateTenant, tenantData)}>Update Tenant</button>
+//         </div>
+//         <div>
+//           <h3>Get Paged Tenants</h3>
+//           <input type="number" name="show" placeholder="Show" onChange={(e) => handleInputChange(e, setFilterData)} />
+//           <input type="number" name="pageSize" placeholder="Page Size" onChange={(e) => handleInputChange(e, setFilterData)} />
+//           <input type="number" name="currentPage" placeholder="Current Page" onChange={(e) => handleInputChange(e, setFilterData)} />
+//           <input type="number" name="sortOrder" placeholder="Sort Order" onChange={(e) => handleInputChange(e, setFilterData)} />
+//           <button onClick={() => handleApiCall(getPagedTenants, filterData)}>Get Tenants</button>
+//         </div>
+//         <div>
+//           <h3>Disable Tenant</h3>
+//           <input type="text" name="id" placeholder="Tenant ID" onChange={(e) => handleInputChange(e, setTenantData)} />
+//           <input type="checkbox" name="disable" onChange={(e) => handleInputChange(e, setTenantData)} /> Disable
+//           <button onClick={() => handleApiCall(disableTenant, tenantData)}>Disable Tenant</button>
+//         </div>
+//       </div>
+//       ) : (
+//         <div>
+//           <div>
+//             <h3>Add User to Tenant</h3>
+//             <input type="text" name="id" placeholder="User ID" onChange={(e) => handleInputChange(e, setUserData)} />
+//             <input type="text" name="username" placeholder="Username" onChange={(e) => handleInputChange(e, setUserData)} />
+//             <input type="text" name="tenantId" placeholder="Tenant ID" onChange={(e) => handleInputChange(e, setUserData)} />
+//             <input type="text" name="group" placeholder="Group" onChange={(e) => handleInputChange(e, setUserData)} />
+//             <input type="text" name="displayName" placeholder="Display Name" onChange={(e) => handleInputChange(e, setUserData)} />
+//             <button onClick={() => handleApiCall(addUser, userData)}>Add User</button>
+//           </div>
+//           <div>
+//             <h3>Toggle User Status</h3>
+//             <input type="text" name="id" placeholder="User ID" onChange={(e) => handleInputChange(e, setUserData)} />
+//             <input type="checkbox" name="enabled" onChange={(e) => handleInputChange(e, setUserData)} /> Enabled
+//             <button onClick={() => handleApiCall(toggleUserStatus, userData)}>Toggle Status</button>
+//           </div>
+//           <div>
+//          /* This part of the code in the TestPage component is responsible for fetching a paged list of
+//          users associated with a specific tenant. Here's a breakdown of what it does: */
+//           /* The user can input a tenant ID, page size, and current page number to fetch a paged list of users. */
+//           /* The `handleInputChange` function updates the `filterData` state based on the input values. */
+//           /* The `handleApiCall` function calls the `getPagedUsers` API function with the `filterData` as input. */
+//             <h3>Get Paged Users for a Tenant</h3>
+//             <input type="text" name="tenantId" placeholder="Tenant ID" onChange={(e) => handleInputChange(e, setFilterData)} />
+//             <input type="number" name="pageSize" placeholder="Page Size" onChange={(e) => handleInputChange(e, setFilterData)} />
+//             <input type="number" name="currentPage" placeholder="Current Page" onChange={(e) => handleInputChange(e, setFilterData)} />
+//             <button onClick={() => handleApiCall(getPagedUsers, filterData)}>Get Paged Users</button>
+//           </div>
+//         </div>
+        
+//       )}
+//       <pre>{result}</pre>
+//     </div>
+//   );
+// };
 
-  const handleCreateServer = async () => {
-    try {
-      const server = {
-        host: 'localhost',
-        portNumber: 5432
-      };
-      const res = await createServer(server, token);
-      setResponse(res);
-    } catch (err) {
-      setError(err.toString());
-    }
-  };
-
-  const handleGetAllServers = async () => {
-    try {
-      const res = await getAllServers(token);
-      setResponse(res);
-    } catch (err) {
-      setError(err.toString());
-    }
-  };
-
-  const handleCreateTenant = async () => {
-    try {
-      const tenant = {
-        customerName: 'New Customer',
-        logoUrl: 'http://example.com/logo.png',
-        databaseId: 'database-uuid'
-      };
-      const res = await createTenant(tenant, token);
-      setResponse(res);
-    } catch (err) {
-      setError(err.toString());
-    }
-  };
-
-  const handleUpdateTenant = async () => {
-    try {
-      const tenant = {
-        id: 'tenant-uuid',
-        customerName: 'Updated Customer',
-        logoUrl: 'http://example.com/updated-logo.png',
-        archived: false
-      };
-      const res = await updateTenant(tenant, token);
-      setResponse(res);
-    } catch (err) {
-      setError(err.toString());
-    }
-  };
-
-  const handleGetPagedTenants = async () => {
-    try {
-      const params = {
-        show: 0,  // 状态
-        searchText: '',
-        pageSize: 10,
-        currentPage: 1,
-        sortOrder: 0
-      };
-      const res = await getPagedTenants(params, token);
-      setResponse(res);
-    } catch (err) {
-      setError(err.toString());
-    }
-  };
-
-  const handleDisableTenant = async () => {
-    try {
-      const params = {
-        id: 'tenant-uuid',
-        disable: true
-      };
-      const res = await disableTenant(params, token);
-      setResponse(res);
-    } catch (err) {
-      setError(err.toString());
-    }
-  };
-
-  useEffect(() => {
-    checkCurrentUser();
-  }, []);
-
-  return (
-    <div>
-      <h1>Test Page</h1>
-      {!user ? (
-        <div>
-          <h2>Login</h2>
-          <button onClick={() => handleLogin('admin')}>Login as Admin</button>
-          <button onClick={() => handleLogin('customer')}>Login as Customer</button>
-        </div>
-      ) : (
-        <>
-          <button onClick={handleAddUser}>Add User</button>
-          <button onClick={handleGetPagedUsers}>Get Paged Users</button>
-          <button onClick={handleToggleUserStatus}>Toggle User Status</button>
-          <button onClick={handleCreateDatabase}>Create Database</button>
-          <button onClick={handleCreateServer}>Create Server</button>
-          <button onClick={handleGetAllServers}>Get All Servers</button>
-          <button onClick={handleCreateTenant}>Create Tenant</button>
-          <button onClick={handleUpdateTenant}>Update Tenant</button>
-          <button onClick={handleGetPagedTenants}>Get Paged Tenants</button>
-          <button onClick={handleDisableTenant}>Disable Tenant</button>
-        </>
-      )}
-      <pre>{response && JSON.stringify(response, null, 2)}</pre>
-      {error && <pre style={{ color: 'red' }}>{error}</pre>}
-    </div>
-  );
-};
-
-export default TestPage;
+// export default TestPage;

@@ -6,7 +6,7 @@ import reportWebVitals from './reportWebVitals';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Amplify } from 'aws-amplify';
 import adminConfig from './aws-exports-admin'; // 导入 Admin 配置
-import customerConfig from './aws-exports-customer'; // 导入 Customer 配置
+// import customerConfig from './aws-exports-customer'; // 导入 Customer 配置
 
 // 默认配置为 Admin 配置
 Amplify.configure(adminConfig);

@@ -1,122 +1,127 @@
-const express = require('express');
-const request = require('request');
-const bodyParser = require('body-parser');
-const AWS = require('aws-sdk');
-const app = express();
-const port = 3001;
+// const express = require('express');
+// const axios = require('axios');
+// const bodyParser = require('body-parser');
+// const cors = require('cors');
 
+// const app = express();
+// app.use(bodyParser.json());
+
+// const corsOptions = {
+//     origin: 'http://localhost:3000', // 允许访问的来源
+//     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+//     credentials: true,
+//     optionsSuccessStatus: 204
+// };
+
+// app.use(cors(corsOptions));
+
+// // 处理预检请求
+// app.options('*', cors(corsOptions));
+
+// app.use('/api', async (req, res) => {
+//     if (req.method === 'OPTIONS') {
+//         // 处理预检请求
+//         console.log('Received OPTIONS request');
+//         return res.sendStatus(204);
+//     }
+
+//     const apiUrl = `https://cdxsetximf.execute-api.eu-west-2.amazonaws.com/Prod/api${req.url}`;
+//     const token = req.headers.authorization ? req.headers.authorization : '';
+
+//     console.log(`Proxying request: ${req.method} ${apiUrl} with body: ${JSON.stringify(req.body)}`);
+//     // console.log(`Authorization: ${token}`);
+
+//     if (!token) {
+//         console.log('No authorization token found');
+//         return res.status(401).send('Unauthorized');
+//     }
+
+//     const options = {
+//         url: apiUrl,
+//         method: req.method,
+//         headers: {
+//             'Content-Type': 'application/json',
+//             'Authorization': token
+//         },
+//         data: req.body
+//     };
+
+//     try {
+//         const response = await axios(options);
+//         console.log(`Response from API: ${response.status} - ${JSON.stringify(response.data)}`);
+//         res.status(response.status).send(response.data);
+//     } catch (error) {
+//         if (error.response) {
+//             console.error(`Error response from API: ${error.response.status} - ${JSON.stringify(error.response.data)}`);
+//             res.status(error.response.status).send(error.response.data);
+//         } else {
+//             console.error(`Error making request to API: ${error.message}`);
+//             res.status(500).send(error.message);
+//         }
+//     }
+// });
+
+// const PORT = process.env.PORT || 5001;
+// app.listen(PORT, () => {
+//     console.log(`Server running on port ${PORT}`);
+// });
+
+const express = require('express');
+const axios = require('axios');
+const bodyParser = require('body-parser');
+const cors = require('cors');
+
+const app = express();
 app.use(bodyParser.json());
 
-app.use((req, res, next) => {
-  console.log(`Received request: ${req.method} ${req.url} with body: ${JSON.stringify(req.body)}`);
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
-  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-  if (req.method === 'OPTIONS') {
-    res.sendStatus(200);
-  } else {
-    next();
-  }
-});
+const corsOptions = {
+    origin: 'http://localhost:3000', // 允许访问的来源
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    credentials: true,
+    optionsSuccessStatus: 204
+};
 
-// 配置AWS SDK
-AWS.config.update({ region: 'eu-west-2' });
+app.use(cors(corsOptions)); // 允许跨域请求
 
-const cognito = new AWS.CognitoIdentityServiceProvider();
+app.options('*', cors(corsOptions)); // 处理所有的预检请求
 
-// 获取JWT token的端点
-app.post('/api/auth', (req, res) => {
-  const options = {
-    url: 'https://cognito-idp.eu-west-2.amazonaws.com/',
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-amz-json-1.1',
-      'X-Amz-Target': 'AWSCognitoIdentityProviderService.InitiateAuth'
-    },
-    json: true,
-    body: {
-      AuthParameters: {
-        USERNAME: "uniAdmin@intebloc.com",
-        PASSWORD: "Pa$$wordUn!v3rs!ty"
-      },
-      AuthFlow: "USER_PASSWORD_AUTH",
-      ClientId: "5usjjfgg2ap4pt4uboaocsv72"
+app.use('/api', async (req, res) => {
+    const apiUrl = `https://cdxsetximf.execute-api.eu-west-2.amazonaws.com/Prod/api${req.url}`;
+    const token = req.headers.authorization ? req.headers.authorization : '';
+
+    console.log(`Proxying request: ${req.method} ${apiUrl} with body: ${JSON.stringify(req.body)}`);
+
+    if (!token) {
+        console.log('No authorization token found');
+        return res.status(401).send('Unauthorized');
     }
-  };
 
-  request(options, (error, response, body) => {
-    if (error) {
-      console.error('Error:', error);
-      res.status(500).send(error);
-    } else {
-      console.log('Response from Cognito:', body);
-      if (response.statusCode === 200) {
-        res.status(200).send(body.AuthenticationResult);
-      } else {
-        res.status(response.statusCode).send(body);
-      }
+    const options = {
+        url: apiUrl,
+        method: req.method,
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': token
+        },
+        data: req.body
+    };
+
+    try {
+        const response = await axios(options);
+        console.log(`Response from API: ${response.status} - ${JSON.stringify(response.data)}`);
+        res.status(response.status).send(response.data);
+    } catch (error) {
+        if (error.response) {
+            console.error(`Error response from API: ${error.response.status} - ${JSON.stringify(error.response.data)}`);
+            res.status(error.response.status).send(error.response.data);
+        } else {
+            console.error(`Error making request to API: ${error.message}`);
+            res.status(500).send(error.message);
+        }
     }
-  });
 });
 
-// 添加用户到Cognito的端点
-app.post('/api/addUserToCognito', (req, res) => {
-  const { username, email } = req.body;
-
-  const params = {
-    UserPoolId: 'eu-west-2_SLJKn90dj',
-    Username: username,
-    UserAttributes: [
-      {
-        Name: 'email',
-        Value: email
-      }
-    ],
-    TemporaryPassword: 'TempPass123!'
-  };
-
-  cognito.adminCreateUser(params, (err, data) => {
-    if (err) {
-      console.error('Error adding user to Cognito:', err);
-      res.status(500).send(err);
-    } else {
-      console.log('User added to Cognito:', data);
-      res.status(200).send({ uuid: data.User.Username }); // 返回用户UUID
-    }
-  });
-});
-
-// 代理API请求并使用JWT token
-app.use('/api', (req, res) => {
-  console.log(`Proxying request: ${req.method} ${req.url} with body: ${JSON.stringify(req.body)}`);
-  const apiUrl = `https://2rk4fbmjib.execute-api.eu-west-2.amazonaws.com/Prod${req.url}`;
-  const options = {
-    url: apiUrl,
-    method: req.method,
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': req.headers.authorization
-    },
-    json: true,
-    body: req.body
-  };
-
-  request(options, (error, response, body) => {
-    if (error) {
-      console.error('Error:', error);
-      res.status(500).send(error);
-    } else {
-      console.log('Response from API:', body);
-      res.status(response.statusCode).send(body);
-    }
-  });
-});
-
-app.use((err, req, res, next) => {
-  console.error('Unexpected error:', err);
-  res.status(500).send({ error: 'Unexpected error' });
-});
-
-app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
 });

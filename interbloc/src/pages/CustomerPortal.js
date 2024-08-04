@@ -1,24 +1,56 @@
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 import LoginCustomer from '../components/customer/LoginCustomer';
-import RegisterCustomer from '../components/customer/RegisterCustomer';
 import ResetPassword from '../components/customer/ResetPassword';
-import SendCode from '../components/customer/SendCode';
 import Dashboard from '../components/customer/Dashboard';
 import CompletedSurvey from '../components/customer/CompletedSurvey';
-import Admin from '../components/customer/Admin';
+import { Amplify } from 'aws-amplify';
+import customerConfig from '../aws-exports-customer';
+import NotFound from '../components/NotFound';
+import ProtectedRoute from '../ProtectedRoute_customer';
+import ContainerPage from '../components/customer/ContainerPage';
+
+Amplify.configure(customerConfig);
 
 const CustomerPortal = () => {
   return (
     <Routes>
       <Route path="/" element={<LoginCustomer />} />
       <Route path="login" element={<LoginCustomer />} />
-      <Route path="dashboard" element={<Dashboard />} />
-      <Route path="register" element={<RegisterCustomer />} />
-      <Route path="reset" element={<ResetPassword />} />
-      <Route path="send-code" element={<SendCode />} />
-      <Route path="mySurvey" element={<CompletedSurvey />} />
-      <Route path="admin" element={<Admin />} />
+      <Route 
+        path="dashboard" 
+        element={
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="reset" 
+        element={
+          <ProtectedRoute>
+            <ResetPassword />
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="mySurvey" 
+        element={
+          <ProtectedRoute>
+            <CompletedSurvey />
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="container" 
+        element={
+          <ProtectedRoute>
+            <ContainerPage />
+          </ProtectedRoute>
+        } 
+      />
+
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 };

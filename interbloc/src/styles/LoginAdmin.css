@@ -1,4 +1,4 @@
-/* Ensure the container takes up the full viewport height */
+Ensure the container takes up the full viewport height
 .vh-100 {
   height: 100vh;
 }
@@ -50,7 +50,6 @@
 
 /* Logo container with black background */
 .logo-container {
-  background-color: black;
   padding: 1rem;
   border-radius: 8px;
   display: flex;
@@ -63,8 +62,8 @@
 
 /* Enlarged logo */
 .logo {
-  width: 150px;
-  height: 150px;
+  width: 236px;
+  height: 86px;
 }
 
 .text-center {
@@ -114,7 +113,6 @@ input[type="password"] {
 .register-button,
 .reset-button,
 .sendcode-button {
-  background: #C11515;
   border: none;
   color: white; /* Added for clear text contrast */
   padding: 1rem 2rem; /* Increased padding for better size */
@@ -123,12 +121,6 @@ input[type="password"] {
   transition: background 0.3s ease-in-out;
 }
 
-.login-button:hover,
-.register-button:hover,
-.reset-button:hover,
-.sendcode-button:hover {
-  background: #e49595;
-}
 
 /* Password icon */
 .password-icon {
